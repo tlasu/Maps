@@ -29,21 +29,25 @@ function init(config) {
         "地理院 淡色地図(Zoom2～)": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
             minZoom: 2,
             maxZoom: 20,
+            maxNativeZoom: 18,
             attribution: 'Map data <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
         }),
         "地理院 English(Zoom2～)": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png', {
             minZoom: 2,
             maxZoom: 20,
+            maxNativeZoom: 18,
             attribution: 'Map data <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
         }),
         "地理院 陰影起伏(Zoom2～)": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
             minZoom: 2,
             maxZoom: 20,
+            maxNativeZoom: 18,
             attribution: 'Map data <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
         }),
         "地理院 写真(Zoom9～)": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
             minZoom: 9,
             maxZoom: 20,
+            maxNativeZoom: 18,
             attribution: 'Map data <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>( Zoom9～13:Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）)'
         })
     }).addTo(map);
