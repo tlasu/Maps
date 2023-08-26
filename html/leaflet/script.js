@@ -69,24 +69,24 @@ ${box.getSouthWest()['lng']},${box.getNorthEast()['lng']}`;
               "coordinates": [
                 [
                   [
-                    49.60356045831966,
-                    13.100805007636438
+                    ${box.getSouthWest()['lng']},
+                    ${box.getSouthWest()['lat']}
                   ],
                   [
-                    28.119046796860317,
-                    13.100805007636438
+                    ${box.getNorthEast()['lng']},
+                    ${box.getNorthEast()['lat']}
                   ],
                   [
-                    28.119046796860317,
-                    -9.828569896570372
+                    ${box.getNorthEast()['lng']},
+                    ${box.getNorthEast()['lat']}
                   ],
                   [
-                    49.60356045831966,
-                    -9.828569896570372
+                    ${box.getSouthEast()['lng']},
+                    ${box.getSouthEast()['lat']}
                   ],
                   [
-                    49.60356045831966,
-                    13.100805007636438
+                    ${box.getSouthWest()['lng']},
+                    ${box.getSouthWest()['lat']}
                   ]
                 ]
               ],
