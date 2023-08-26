@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>LonLat Region</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+    <!-- leaflet 1.9.4 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- header -->
+        <header class="header">
+            <div class="container">
+                <h1 class="header-logo">
+                    <a href=".">LonLat Region from Map</a>
+                </h1>
+            </div>
+        </header>
+        <!-- /header -->
+
+        <main class="content">
+            <div class="mv">
+                <div id="container">
+
+                    <div id="urls"></div>
+                    <!-- <footer>©2020 <a href='https://github.com/frogcat'>frogcat</a></footer> -->
+                </div>
+            </div>
+            <section class="works section" id="works">
+                <div class="container">
+                    <div id="map"></div>
+                </div>
+            </section>
+        </main>
+        <script>
+            init({
+                mapOption: {
+                    maxZoom: 19,
+                    zoom: 11,
+                    center: [35.685, 139.753],
+                    preferCanvas: true
+                },
+                bounds: L.latLngBounds([
+                    [35.685 + 0.1, 139.753 + 0.1],
+                    [35.685 - 0.1, 139.753 - 0.1]
+                ]),
+            });
+        </script>
+    </div>
+</body>
+
+</html>
