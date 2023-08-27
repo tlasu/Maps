@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>LonLat Region</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+    <!-- maplibre 3.3.0 -->
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@3.3.0/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@3.3.0/dist/maplibre-gl.js'></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="script.js"></script>-->
+
+    <style>
+        /*
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+        */
+        .coordinates1 {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 11px;
+            line-height: 18px;
+            border-radius: 3px;
+            display: none;
+        }
+
+        .coordinates2 {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            position: absolute;
+            bottom: 90px;
+            left: 10px;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 11px;
+            line-height: 18px;
+            border-radius: 3px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- header -->
+        <header class="header">
+            <div class="container">
+                <h1 class="header-logo">
+                    <a href=".">LonLat Region from Map</a>
+                </h1>
+            </div>
+        </header>
+        <!-- /header -->
+    
+        <main class="content">
+            <div class="mv">
+                <div id="container">
+                    <div id="urls"></div>
+                </div>
+            </div>
+            <section class="works section" id="works">
+                <div class="container">
+                    <div id="map"></div>
+                    <pre id="coordinates1" class="coordinates1"></pre>
+                    <pre id="coordinates2" class="coordinates2"></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let config = {
+            mapOption: {
+                //maxZoom: 19,
+                zoom: 11,
+                center: [139.753,35.685],
+                preferCanvas: true
+            },
+        };
+
+
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: {
+                version: 8,
+                sources: {
+                    t_pale: {
+                        type: 'raster',
+                        tiles: ['https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'],
+                        tileSize: 256,
+                        attribution:
+                            '<a href="http://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html" target="_blank">地理院タイル</a>',
+                    },
+                },
+                layers: [
+                    {
+                        id: 't_pale',
+                        type: 'raster',
+                        source: 't_pale',
+                        minzoom: 0,
+                        maxzoom: 18,
+                    },
+                ],
+            },
+            center: config.mapOption.center,
+            zoom: config.mapOption.zoom,
+        });
+        // コントロール関係表示
+        map.addControl(new maplibregl.NavigationControl());
+
+        
+        const coordinates = document.getElementById('coordinates');
+
+        const marker1 = new maplibregl.Marker({ draggable: true, })
+            .setLngLat([config.mapOption.center[0] + 0.01, config.mapOption.center[1] + 0.01])
+            .addTo(map);
+        marker1.properties = "coordinates1"
+
+        const marker2 = new maplibregl.Marker({ draggable: true, })
+        .setLngLat([config.mapOption.center[0] - 0.01, config.mapOption.center[1] - 0.01])
+            .addTo(map);
+        marker2.properties = "coordinates2"
+
+        function onDragEnd(event) {
+            const lngLat = event.target.getLngLat();
+            coordinates.style.display = 'block';
+            coordinates.innerHTML =
+                `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+        }
+
+        const latlng0 = [139.767, 35.681]
+        const latlng1 = [139.747, 35.641]
+
+
+        function return_rectangle_geojson(latlng0, latlng1) {
+            return {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                [latlng0,
+                                    [latlng0[0], latlng1[1]],
+                                    latlng1,
+                                    [latlng1[0], latlng0[1]],
+                                    latlng0,
+                                ]
+                            ]
+                        },
+                        'properties': {}
+                    }
+                ]
+            }
+        }
+
+    
+   const set_latlonlist = function(marker1,marker2){      
+        let lat0 = Math.min(marker1.getLngLat().lat,marker2.getLngLat().lat)
+        let lat1 = Math.max(marker1.getLngLat().lat,marker2.getLngLat().lat)
+        
+        let lng0 = Math.min(marker1.getLngLat().lng,marker2.getLngLat().lng)
+        let lng1 = Math.max(marker1.getLngLat().lng,marker2.getLngLat().lng)
+        
+        return `area=${lat0},${lat1},${lng0},${lng1}`;
+    }
+
+        function move_rectangle(event) {
+
+            let latlng1 = [];
+            let latlng2 = [];
+
+            let lngLat = event.target.getLngLat();
+            latlng1 = [lngLat.lng, lngLat.lat];
+
+            if (event.target.properties == marker1.properties) {
+                lngLat = marker2.getLngLat()
+                latlng2 = [lngLat.lng, lngLat.lat];
+            } else {
+                lngLat = marker1.getLngLat()
+                latlng2 = [lngLat.lng, lngLat.lat];
+            }
+
+            const ss = return_rectangle_geojson(latlng1, latlng2);
+
+            map.getSource('rect').setData(ss);
+
+            const coordinates = document.getElementById(event.target.properties);
+            coordinates.style.display = 'block';
+            coordinates.innerHTML =
+                `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+            const latlngtext = set_latlonlist(marker1,marker2);
+            document.getElementById("urls").textContent = latlngtext;
+        }
+        // Event
+        marker1.on("dragend", move_rectangle);
+        marker2.on("dragend", move_rectangle);
+    </script>
+</body>
+
+</html>
+<script>
+    let rect_geojson = return_rectangle_geojson(
+        [marker1.getLngLat().lng, marker1.getLngLat().lat],
+        [marker2.getLngLat().lng, marker2.getLngLat().lat]
+    );
+
+    map.addSource('rect', {
+        'type': 'geojson',
+        'data': rect_geojson});
+
+    // Add a symbol layer
+    map.addLayer({
+        'id': 'rect',
+        'type': 'line',
+        'source': 'rect',
+        'layout': {
+        }
+    });
+
+</script>
